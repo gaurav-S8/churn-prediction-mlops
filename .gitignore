@@ -1,0 +1,16 @@
+# Important Files
+.env
+
+# PyCache Folder
+__pycache__/
+.pytest_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# MLflow runs
+mlruns/
+mlflow.db
+
+# Docker ignore file
+.dockerignore
