@@ -14,3 +14,6 @@ mlflow.db
 
 # Docker ignore file
 .dockerignore
+
+# Data Folder
+data/

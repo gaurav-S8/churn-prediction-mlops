@@ -326,7 +326,7 @@ Configuration is managed via environment variables (defined in `docker-compose.y
 ├── app/
 │   ├── main.py                          # FastAPI application & endpoints
 │   └── model.py                         # Loads trained models from MLflow
-├── data/                                # Raw datasets
+├── data/                                # Raw datasets (not included — Download from Kaggle)
 ├── kaggle_submission/                   # Generated submission files
 ├── notebook/                            # Exploratory data analysis notebooks
 ├── src/
