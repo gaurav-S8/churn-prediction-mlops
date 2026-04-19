@@ -15,7 +15,7 @@ The system integrates model training, hyperparameter tuning, and experiment trac
 
 ---
 
-## 📊 Kaggle Benchmark
+## Kaggle Benchmark
 
 **Competition**: [Playground Series S6E3 — Predict Customer Churn](https://www.kaggle.com/competitions/playground-series-s6e3)  
 **Final Rank**: **1160 / 4142 teams (Top 28%)**
@@ -23,7 +23,7 @@ The system integrates model training, hyperparameter tuning, and experiment trac
 This project extends the competition solution into a full end-to-end MLOps pipeline, incorporating experiment tracking, model ensembling, and production-style API deployment.
 
 
-### 📈 Model Performance
+### Model Performance
 
 - **Validation ROC-AUC**: 0.91538  
 - **Top Leaderboard Score**: 0.91856  
@@ -65,7 +65,7 @@ Achieved near top-tier performance (~0.003 from the best score) using a weighted
 
 ---
 
-## 🧪 Machine Learning Pipeline
+## Machine Learning Pipeline
 
 The pipeline trains three gradient boosting models — **LightGBM, XGBoost, and CatBoost** — on a shared preprocessing and feature engineering foundation, and combines them into a weighted ensemble optimized for ROC-AUC.
 
@@ -94,7 +94,7 @@ A probability above `0.5` is classified as **churn**.
 
 ---
 
-## 📡 API Endpoints
+## API Endpoints
 
 ### `GET /`
 
@@ -226,7 +226,7 @@ curl -X POST http://localhost:8000/reload-model
 
 ---
 
-## ⚙️ How To Run
+## How To Run
 
 ### Prerequisites
 
@@ -319,7 +319,7 @@ Configuration is managed via environment variables (defined in `docker-compose.y
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 .

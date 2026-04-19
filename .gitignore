@@ -17,3 +17,6 @@ mlflow.db
 
 # Data Folder
 data/
+
+# Remove Setup folder
+churn_prediction.egg-info/
