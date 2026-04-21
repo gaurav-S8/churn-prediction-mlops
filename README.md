@@ -327,8 +327,6 @@ Configuration is managed via environment variables (defined in `docker-compose.y
 │   ├── main.py                          # FastAPI application & endpoints
 │   └── model.py                         # Loads trained models from MLflow
 ├── data/                                # Raw datasets (not included — Download from Kaggle)
-├── kaggle_submission/                   # Generated submission files
-├── notebook/                            # Exploratory data analysis notebooks
 ├── src/
 │   ├── create_bucket.py                 # MinIO bucket setup script (run once)
 │   ├── optuna_hp_optimization.py        # Hyperparameter tuning
