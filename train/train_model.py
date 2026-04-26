@@ -86,7 +86,7 @@ try:
         best_params = {}
         best_scores = {}
         for name, model in models.items():
-            study = run_study(base_model = model, model_name = name, X = X_full, y = y_full, n_trials = 1, cv = 5, seed = 42)
+            study = run_study(base_model = model, model_name = name, X = X_full, y = y_full, n_trials = 30, cv = 5, seed = 42)
             best_params[name] = study.best_params
             best_scores[name] = study.best_value
             mlflow.log_params({f'{name}_{k}': v for k, v in best_params[name].items()})
