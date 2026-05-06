@@ -1,0 +1,55 @@
+services:
+    minio:
+        image: minio/minio
+        container_name: minio
+        command: server /data --console-address ":9001"
+        ports:
+            - "9000:9000"
+            - "9001:9001"
+        environment:
+            - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+            - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+        volumes:
+            - minio_data:/data
+
+    mlflow:
+        image: ghcr.io/mlflow/mlflow
+        working_dir: /mlflow
+        command: >
+            mlflow server
+            --backend-store-uri sqlite:///mlflow.db
+            --default-artifact-root s3://mlflow-artifacts/
+            --host 0.0.0.0
+            --port 5000
+            --allowed-hosts "mlflow:*,localhost:*,127.0.0.1:*"
+            --serve-artifacts
+        environment:
+            - MLFLOW_ALLOWED_HOSTS=mlflow:*,localhost:*,127.0.0.1:*
+            - MLFLOW_S3_ENDPOINT_URL=${MLFLOW_S3_ENDPOINT_URL}
+            - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+            - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+        ports:
+            - "5000:5000"
+        volumes:
+            - mlflow_data:/mlflow
+
+    fastapi:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - "8000:8000"
+        environment:
+            - MLFLOW_TRACKING_URI=${MLFLOW_TRACKING_URI}
+            - MLFLOW_EXPERIMENT_NAME=${MLFLOW_EXPERIMENT_NAME}
+            - MLFLOW_S3_ENDPOINT_URL=${MLFLOW_S3_ENDPOINT_URL}
+            - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+            - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+        volumes:
+            - mlflow_data:/mlflow
+        depends_on:
+            - mlflow
+
+volumes:
+    minio_data:
+    mlflow_data:

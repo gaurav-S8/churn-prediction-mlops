@@ -15,9 +15,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy only needed folders
 COPY app/ ./app/
-COPY src/ ./src/
-COPY train/ ./train/
-COPY data/ ./data/
+COPY models/ ./models/
+COPY utils/ ./utils/
 COPY setup.py .
 
 # Install project as package

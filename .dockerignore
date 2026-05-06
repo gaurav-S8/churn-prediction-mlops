@@ -1,0 +1,28 @@
+# Important Files
+.env
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Python Cache Files
+__pycache__/
+.pytest_cache/
+
+# MLFlow runs
+mlruns/
+mlartifacts/
+mlflow.db
+
+# Folders
+archive/
+data/
+tests/
+model_training/
+
+# Github Files
+.git/
+.gitignore
+.gitattributes
+
+# Remove Setup folder
+churn_prediction.egg-info/

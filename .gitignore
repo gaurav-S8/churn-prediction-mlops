@@ -9,7 +9,7 @@ __pycache__/
 .ipynb_checkpoints/
 
 # MLflow runs
-mlruns/
+mlartifacts/
 mlflow.db
 
 # Docker ignore file

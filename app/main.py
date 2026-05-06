@@ -1,23 +1,32 @@
 # Import Libraries
+import os
+import random
 import pandas as pd
 from typing import Literal
 from fastapi import FastAPI
+from dotenv import load_dotenv
 
 from contextlib import asynccontextmanager
 from pydantic import BaseModel, Field, field_validator
 
 # Import Custom Modules
-from app.model import load_model
-from src.preprocess import preprocess_and_engineer_feature
+from app.load_model import load_model
+from utils.preprocess import preprocess_and_engineer_feature
+
+# Load env
+load_dotenv()
 
 # Cache ensemble globally
-ensemble = None
+champion_ensemble = None
+challenger_ensemble = None
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Load model once at startup
-    global ensemble
-    ensemble = load_model()
+    global champion_ensemble, challenger_ensemble
+    champion_ensemble = load_model(os.getenv("CHAMPION_FOLDER", "models/champion"))
+    challenger_ensemble = load_model(os.getenv("CHALLENGER_FOLDER", "models/challenger"))
+
     yield
     # Cleanup on shutdown (optional)
 
@@ -75,11 +84,13 @@ def check_api_health():
 @app.post("/predict")
 def predict(customer: CustomerData) -> dict:
     
-    global ensemble
-    if ensemble is None:
-        ensemble = load_model()
-        if ensemble is None:
-            raise ValueError("No experiment logged in MLflow")
+    global champion_ensemble, challenger_ensemble
+    if challenger_ensemble and random.random() > 0.5:
+        ensemble = challenger_ensemble
+        model_version = 'challenger'
+    else:
+        ensemble = champion_ensemble
+        model_version = 'champion'
     
     # Convert input to dataframe
     input_df = pd.DataFrame([customer.model_dump()])
@@ -109,9 +120,3 @@ def predict(customer: CustomerData) -> dict:
             'cat': round(float(pred_cat), 4)
         }
     }
-
-@app.post("/reload-model")
-def reload_model():
-    global ensemble
-    ensemble = load_model()
-    return {"status": "Latest model loaded!!"}
