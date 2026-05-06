@@ -25,11 +25,11 @@ jobs:
       - name: Run tests
         run: pytest tests/test_api.py -v
 
-deploy:
-    needs: test
-    runs-on: ubuntu-latest
+  deploy:
+      needs: test
+      runs-on: ubuntu-latest
 
-    steps:
-      - name: Trigger Render Deploy
-        run: |
-          curl ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+      steps:
+        - name: Trigger Render Deploy
+          run: |
+            curl ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
