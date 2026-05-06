@@ -1,4 +1,0 @@
-app
-model_training
-tests
-utils
