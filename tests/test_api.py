@@ -19,7 +19,7 @@ def client():
             yield c
 
 def valid_payload():
-    return {s
+    return {
         "CustomerID": "C123",
         "Gender": "Male",
         "SeniorCitizen": 1,
