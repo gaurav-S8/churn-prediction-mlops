@@ -15,8 +15,8 @@ from app.main import app
 @pytest.fixture(scope="session")
 def client():
     with patch('app.db.log_prediction'), patch('app.db.init_db'):
-    with TestClient(app) as c:
-        yield c
+        with TestClient(app) as c:
+            yield c
 
 def valid_payload():
     return {s
