@@ -3,6 +3,7 @@ import os
 import json
 import mlflow
 import joblib
+from datetime import datetime
 from dotenv import load_dotenv
 
 # Import Custom Function
@@ -28,6 +29,7 @@ def get_experiment_runs():
     return client, runs
 
 def download_models_and_weights(client, run_id, folder):
+    """
     os.makedirs(folder, exist_ok = True)
     for model_name in ["lgb_model", "xgb_model", "cat_model"]:
         local_path = mlflow.artifacts.download_artifacts(
@@ -37,19 +39,58 @@ def download_models_and_weights(client, run_id, folder):
         model = mlflow.sklearn.load_model(local_path)
         joblib.dump(model, os.path.join(folder, f"{model_name}.pkl"))
         print(f"{model_name.upper()}.pkl saved to {folder}")
+    """
     
     # Fetch run data
     run = client.get_run(run_id)
-    # Extract ensemble weights
-    weights = {
-        "w_lgb": run.data.metrics["w_lgb"],
-        "w_xgb": run.data.metrics["w_xgb"],
-        "w_cat": run.data.metrics["w_cat"]
+
+    # Save model info
+    model_info = {
+        "run_id": run_id,
+        "trained_at": datetime.fromtimestamp(run.info.start_time / 1000).isoformat(),
+        "role": os.path.basename(folder),
+        "weights": {
+            "w_lgb": run.data.metrics['w_lgb'],
+            "w_xgb": run.data.metrics['w_xgb'],
+            "w_cat": run.data.metrics['w_cat']
+        },
+        "oof_roc_auc_scores": {
+            "roc_auc_lgb": run.data.metrics['oof_auc_lgb'],
+            "roc_auc_xgb": run.data.metrics['oof_auc_xgb'],
+            "roc_auc_cat": run.data.metrics['oof_auc_cat'],
+            "roc_auc_ensemble": run.data.metrics['oof_auc_ensemble']
+        },
+        "parameters": {
+            "lgb": {
+                "n_estimators": run.data.params['lgb_n_estimators'],
+                "max_depth": run.data.params['lgb_max_depth'],
+                "learning_rate": run.data.params['lgb_learning_rate'],
+                "subsample": run.data.params['lgb_subsample'],
+                "colsample_bytree": run.data.params['lgb_colsample_bytree'],
+                "min_child_samples": run.data.params['lgb_min_child_samples'],
+                "num_leaves": run.data.params['lgb_num_leaves']
+            },
+            "xgb": {
+                "n_estimators": run.data.params['xgb_n_estimators'],
+                "max_depth": run.data.params['xgb_max_depth'],
+                "learning_rate": run.data.params['xgb_learning_rate'],
+                "subsample": run.data.params['xgb_subsample'],
+                "colsample_bytree": run.data.params['xgb_colsample_bytree'],
+                "min_child_weight": run.data.params['xgb_min_child_weight'],
+                "gamma": run.data.params['xgb_gamma']
+            },
+            "cat": {
+                "iterations": run.data.params['cat_iterations'],
+                "depth": run.data.params['cat_depth'],
+                "learning_rate": run.data.params['cat_learning_rate'],
+                "l2_leaf_reg": run.data.params['cat_l2_leaf_reg'],
+                "subsample": run.data.params['cat_subsample']
+            }
+        }
     }
-    # Save weights.json
-    with open(os.path.join(folder, "weights.json"), "w") as f:
-        json.dump(weights, f, indent = 4)
-    print(f"Weights saved to {folder}/weights.json")
+    with open(os.path.join(folder, "model_info.json"), "w") as f:
+        json.dump(model_info, f, indent = 4)
+    print(f"Model info saved to {folder}/model_info.json")
 
 def main():
     

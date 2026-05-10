@@ -12,9 +12,6 @@ __pycache__/
 mlartifacts/
 mlflow.db
 
-# Docker ignore file
-.dockerignore
-
 # Data Folder
 data/
 
