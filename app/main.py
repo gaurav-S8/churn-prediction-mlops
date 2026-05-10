@@ -60,8 +60,9 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins = [
-        "https://your-username-churn-intelligence.hf.space",
-        "http://localhost:8501"
+        os.getenv("HF_SPACE_URL"),
+        os.getenv("LOCALHOST", "http://localhost:8000"),
+        os.getenv("STREAMLIT_LOCALHOST", "http://localhost:8501"),
     ],
     allow_methods = ["GET", "POST"],
     allow_headers = ["*"]

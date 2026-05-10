@@ -13,7 +13,8 @@ mlartifacts/
 mlflow.db
 
 # Data Folder
-data/
+data/train.csv
+data/test.csv
 
 # Remove Setup folder
 churn_prediction.egg-info/
