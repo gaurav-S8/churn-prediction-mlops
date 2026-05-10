@@ -18,6 +18,7 @@ def client():
         patch('app.logging.log_prediction'),
         patch('app.logging.log_raw_input'), 
         patch('app.db.init_db'),
+        patch('app.db.init_pool'),
         patch('app.registry.sync_model_registry')
     ):
         with patch.dict('os.environ', {'API_KEY': 'test-api-key'}):
