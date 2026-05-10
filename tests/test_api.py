@@ -14,9 +14,16 @@ from app.main import app
 
 @pytest.fixture(scope = "session")
 def client():
-    with patch('app.logging.log_prediction'), patch('app.logging.log_raw_input'), patch('app.db.init_db'):
-        with TestClient(app) as c:
-            yield c
+    with (
+        patch('app.logging.log_prediction'),
+        patch('app.logging.log_raw_input'), 
+        patch('app.db.init_db'),
+        patch('app.registry.sync_model_registry')
+    ):
+        with patch.dict('os.environ', {'API_KEY': 'test-api-key'}):
+            with TestClient(app) as c:
+                c.headers.update({"X-API-Key": "test-api-key"})
+                yield c
 
 def valid_payload():
     return {
