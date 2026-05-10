@@ -1,12 +1,11 @@
-import os
+# Import Libraries
 import json
 import psycopg2
 import pandas as pd
 from psycopg2 import pool
-from dotenv import load_dotenv
 
-load_dotenv()
-DATABASE_URL = os.getenv("DATABASE_URL")
+# Import Custom Modules
+from app.config.settings import DATABASE_URL
 
 connection_pool = None
 def init_pool():
@@ -16,7 +15,7 @@ def init_pool():
 def get_connection():
     return psycopg2.connect(DATABASE_URL)
 
-def execute_query(query, params=None):
+def execute_query(query, params = None):
     conn = connection_pool.getconn()
     try:
         cursor = conn.cursor()

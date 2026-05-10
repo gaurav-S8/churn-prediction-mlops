@@ -1,5 +1,8 @@
+# Import Libraries
 import streamlit as st
 import plotly.graph_objects as go
+
+# Import Custom Modules
 from components.customer_form import customer_form
 from utils.api import api_post
 from utils.plots import base_layout, GRID_CLR
@@ -12,13 +15,31 @@ def render():
     </div>
     """, unsafe_allow_html = True)
 
-    payload = customer_form("explain")
+    payload = customer_form("explain", mode = "explain")
 
     if payload:
         with st.spinner("Computing SHAP values..."):
             data, status = api_post("/explain", payload)
 
         if status == 200:
+            st.markdown("""
+                <div class = "section-heading">
+                    <div class = "section-title">
+                        SHAP Feature Contributions
+                    </div>
+                    <div class = "section-subtitle">
+                        Feature-level impact on churn prediction
+                    </div>
+                </div>
+            """, unsafe_allow_html = True)
+
+            st.info(
+                """
+                Red features increased churn risk.
+                Green features reduced churn risk.
+                """
+            )
+
             shap = data.get("shap_values", {})
             if shap:
                 feats = list(shap.keys())
@@ -37,20 +58,9 @@ def render():
                     )
                 )
                 fig.update_layout(
-                    **base_layout(520),
+                    **base_layout(600),
                     xaxis = dict(title = "SHAP Value", gridcolor = GRID_CLR),
-                    yaxis = dict(gridcolor = GRID_CLR, tickfont = dict(size = 11)),
-                    annotations = [
-                        dict(
-                            x = 0.5,
-                            y = -0.08,
-                            xref = "paper",
-                            yref = "paper",
-                            text = "Red = increases churn risk   |   Green = decreases churn risk",
-                            showarrow = False,
-                            font = dict(size = 11, color = "rgba(255, 255, 255, 0.3)")
-                        )
-                    ]
+                    yaxis = dict(gridcolor = GRID_CLR, tickfont = dict(size = 11))
                 )
                 st.plotly_chart(fig, use_container_width = True)
         else:

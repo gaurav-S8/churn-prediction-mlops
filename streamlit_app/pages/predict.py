@@ -1,5 +1,8 @@
+# Import Libraries
 import streamlit as st
 import plotly.graph_objects as go
+
+# Import Custom Modules
 from components.customer_form import customer_form
 from utils.api import api_post
 from utils.plots import base_layout, GRID_CLR
@@ -12,7 +15,7 @@ def render():
     </div>
     """, unsafe_allow_html = True)
 
-    payload = customer_form("predict")
+    payload = customer_form("predict", mode = "predict")
 
     if payload:
         with st.spinner("Running inference..."):
@@ -21,11 +24,19 @@ def render():
         if status == 200:
             prob = data.get("churn_probability", 0)
             pred = data.get("churn_prediction", "")
-            ver = data.get("model_version", "—")
+            ver = data.get("model_role", "—")
             preds = data.get("model_predictions", {})
             val_cls = "churn" if pred == "Yes" else "safe"
 
             st.markdown(f"""
+                <div class="section-heading">
+                    <div class="section-title">
+                        Inference Results
+                    </div>
+                    <div class="section-subtitle">
+                        Ensemble prediction and churn risk analysis
+                    </div>
+                </div>
                 <div class="metric-grid">
                     <div class="metric-item">
                         <div class="label">Prediction</div>
@@ -66,7 +77,7 @@ def render():
                         }
                     )
                 )
-                fig.update_layout(**base_layout(240))
+                fig.update_layout(**base_layout(300))
                 st.plotly_chart(fig, use_container_width = True)
 
             with col_models:
@@ -92,7 +103,17 @@ def render():
                         annotation_font_color = "rgba(255, 255, 255, 0.3)"
                     )
                     fig2.update_layout(
-                        **base_layout(240),
+                        **base_layout(300),
+                        title = dict(
+                            text = "Per-Model Churn Scores",
+                            x = 0,
+                            xanchor = "left",
+                            font = dict(
+                                size = 16,
+                                color = "#ffffff",
+                                family = "DM Sans"
+                            )
+                        ),
                         yaxis = dict(range = [0, 1], gridcolor = GRID_CLR)
                     )
                     st.plotly_chart(fig2, use_container_width = True)

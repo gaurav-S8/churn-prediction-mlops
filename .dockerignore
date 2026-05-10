@@ -1,5 +1,6 @@
 # Important Files
 .env
+.env.docker
 
 # Jupyter
 .ipynb_checkpoints/
@@ -7,6 +8,13 @@
 # Python Cache Files
 __pycache__/
 .pytest_cache/
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
 
 # MLFlow runs
 mlruns/
@@ -25,3 +33,7 @@ model_training/
 
 # Remove Setup folder
 churn_prediction.egg-info/
+
+# Virtual Environments
+venv/
+.venv/

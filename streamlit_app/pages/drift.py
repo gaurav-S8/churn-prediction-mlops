@@ -1,5 +1,8 @@
+# Import Libraries
 import streamlit as st
 import plotly.graph_objects as go
+
+# Import Custom Modules
 from utils.api import api_get
 from utils.plots import base_layout, GRID_CLR
 from config.settings import API_URL
@@ -12,11 +15,23 @@ def render():
     </div>
     """, unsafe_allow_html = True)
 
-    col_ctrl, _ = st.columns([1, 2])
-    with col_ctrl:
-        limit = st.slider("Requests to analyze", 10, 500, 100)
+    c1, _, c2 = st.columns([4, 0.2, 1])
+    with c1:
+        limit = st.slider(
+            "Requests to analyze", 10, 500, 100, 5
+        )
 
-    if st.button("Analyze Drift", use_container_width = False):
+    with c2:
+        st.markdown(
+            "<div style='height:28px'></div>",
+            unsafe_allow_html = True
+        )
+        analyze_clicked = st.button(
+            "Analyze Drift",
+            use_container_width = True
+        )
+    
+    if analyze_clicked:
         with st.spinner("Analyzing..."):
             data, status = api_get(f"/drift?limit = {limit}")
 
@@ -61,13 +76,14 @@ def render():
                     )
                     st.plotly_chart(fig, use_container_width = True)
 
-                st.markdown('<hr class="divider">', unsafe_allow_html = True)
-                st.markdown(
-                    f'<a href="{API_URL}/drift/report" target="_blank" '
-                    f'style="font-size:13px;color:rgba(255,255,255,0.4);'
-                    f'text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.15)">'
-                    f'View full Evidently report →</a>',
-                    unsafe_allow_html = True
+                st.markdown('<hr class = "divider">', unsafe_allow_html = True)
+                st.markdown(f"""
+                    <a href = "{API_URL}/drift/report"
+                    target = "_blank"
+                    class = "evidently-link">
+                        View Full Evidently Report →
+                    </a>
+                """, unsafe_allow_html = True
                 )
         else:
             st.error(f"Error {status}: {data}")

@@ -1,17 +1,22 @@
+# Import Libraries
 import requests
 import streamlit as st
-from config.settings import API_URL
+
+# Import Custom Modules
+from config.settings import API_KEY, API_URL
+
+HEADERS = {"X-API-Key": API_KEY}
 
 def api_get(path):
     try:
-        r = requests.get(f"{API_URL}{path}", timeout = 30)
+        r = requests.get(f"{API_URL}{path}", headers = HEADERS, timeout = 30)
         return r.json(), r.status_code
     except Exception as e:
         return {"error": str(e)}, 500
 
 def api_post(path, payload):
     try:
-        r = requests.post(f"{API_URL}{path}", json = payload, timeout = 60)
+        r = requests.post(f"{API_URL}{path}", headers = HEADERS, json = payload, timeout = 60)
         return r.json(), r.status_code
     except Exception as e:
         return {"error": str(e)}, 500

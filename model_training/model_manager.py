@@ -95,7 +95,7 @@ def download_models_and_weights(client, run_id, folder):
 def main():
     
     # Start MLflow server
-    mlflow_process = start_mlflow_server()
+    mlflow_process = start_mlflow_server(TRACKING_URI)
     mlflow.set_tracking_uri(TRACKING_URI)
 
     client, runs = get_experiment_runs()

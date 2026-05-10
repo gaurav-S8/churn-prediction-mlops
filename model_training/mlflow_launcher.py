@@ -3,9 +3,9 @@ import time
 import subprocess
 import requests
 
-def start_mlflow_server():
+def start_mlflow_server(TRACKING_URI):
     try:
-        requests.get("http://localhost:5000", timeout = 5)
+        requests.get(TRACKING_URI, timeout = 5)
         print("MLflow already running.")
         return None
     except requests.exceptions.RequestException:

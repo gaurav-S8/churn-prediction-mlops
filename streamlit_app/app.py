@@ -1,13 +1,16 @@
+# Import Libraries
 import streamlit as st
+
+# Import Custom Modules
 from styles.global_styles import inject_styles
 from components.navbar import render_navbar
 from pages import predict, explain, benchmark, ab_report, drift, registry
 
 st.set_page_config(
-    page_title="Churn Intelligence",
-    page_icon="◈",
-    layout="wide",
-    initial_sidebar_state="collapsed"
+    page_title = "Churn Intelligence",
+    page_icon = "◈",
+    layout = "wide",
+    initial_sidebar_state = "collapsed"
 )
 
 inject_styles()

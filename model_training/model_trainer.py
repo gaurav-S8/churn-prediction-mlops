@@ -28,7 +28,7 @@ EXPERIMENT_NAME = os.getenv("MLFLOW_EXPERIMENT_NAME", "Churn_Prediction")
 def main():
 
     # Start MLflow server
-    mlflow_process = start_mlflow_server()
+    mlflow_process = start_mlflow_server(TRACKING_URI)
 
     # Load Dataset
     train_df = pd.read_csv(f'{DATA_PATH}/train.csv')
