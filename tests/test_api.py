@@ -12,9 +12,9 @@ sys.path.append(BASE_DIR)
 # Import Custom Modules
 from app.main import app
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope = "session")
 def client():
-    with patch('app.db.log_prediction'), patch('app.db.init_db'):
+    with patch('app.logging.log_prediction'), patch('app.logging.log_raw_input'), patch('app.db.init_db'):
         with TestClient(app) as c:
             yield c
 
@@ -52,11 +52,11 @@ def test_root_endpoint(client):
     assert response.status_code == 200
 
 def test_valid_payload_should_pass(client):
-    response = client.post("/predict", json=valid_payload())
+    response = client.post("/predict", json = valid_payload())
     assert response.status_code == 200
 
 def test_response_structure_should_be_correct(client):
-    response = client.post("/predict", json=valid_payload())
+    response = client.post("/predict", json = valid_payload())
     data = response.json()
     assert "churn_probability" in data
     assert "churn_prediction" in data
@@ -68,5 +68,5 @@ def test_response_structure_should_be_correct(client):
 def test_extra_field_should_fail(client):
     payload = valid_payload()
     payload['Extra'] = 0
-    response = client.post("/predict", json=payload)
+    response = client.post("/predict", json = payload)
     assert response.status_code == 422
