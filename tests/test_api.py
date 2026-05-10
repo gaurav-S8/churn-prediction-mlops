@@ -15,11 +15,11 @@ from app.main import app
 @pytest.fixture(scope = "session")
 def client():
     with (
-        patch('app.logging.log_prediction'),
-        patch('app.logging.log_raw_input'), 
-        patch('app.db.init_db'),
         patch('app.db.init_pool'),
-        patch('app.registry.sync_model_registry')
+        patch('app.db.init_db'),
+        patch('app.registry.sync_model_registry'),
+        patch('app.logging.log_prediction'),
+        patch('app.logging.log_raw_input')
     ):
         with patch.dict('os.environ', {'API_KEY': 'test-api-key'}):
             with TestClient(app) as c:
