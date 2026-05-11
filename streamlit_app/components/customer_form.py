@@ -1,7 +1,6 @@
 # Import Libraries
 import json
 import random
-import pyperclip
 import streamlit as st
 
 def random_payload():
@@ -145,7 +144,7 @@ def customer_form(key_prefix = "", mode = "predict"):
             # Convert to JSON
             payload_json = json.dumps(current_payload, indent = 2)
             # Copy to clipboard
-            pyperclip.copy(payload_json)
+            st.code(payload_json, language = "json")
             st.toast("Customer profile copied to clipboard")
         
         if mode == "explain" and paste_info_clicked:

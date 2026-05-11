@@ -28,7 +28,7 @@ jobs:
           API_KEY: test-api-key
         run: pytest tests/test_api.py -v
 
-  deploy:
+  deploy-render:
     needs: test
     runs-on: ubuntu-latest
 
