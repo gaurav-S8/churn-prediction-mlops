@@ -16,8 +16,7 @@ def get_connection():
     return psycopg2.connect(DATABASE_URL)
 
 def execute_query(query, params = None):
-    conn = connection_pool.getconn()
-    try:
+    def run(conn):
         cursor = conn.cursor()
         cursor.execute(query, params or ())
         try:
@@ -27,8 +26,21 @@ def execute_query(query, params = None):
         conn.commit()
         cursor.close()
         return result
+
+    conn = connection_pool.getconn()
+    try:
+        if conn.closed:
+            connection_pool.putconn(conn)
+            conn = get_connection()
+        return run(conn)
+    except OperationalError:
+        conn = get_connection()
+        return run(conn)
     finally:
-        connection_pool.putconn(conn)
+        try:
+            connection_pool.putconn(conn)
+        except:
+            pass
 
 def init_db():
     conn = get_connection()

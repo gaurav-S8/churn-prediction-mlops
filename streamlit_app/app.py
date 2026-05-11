@@ -7,7 +7,7 @@ from components.navbar import render_navbar
 from pages import predict, explain, benchmark, ab_report, drift, registry
 
 st.set_page_config(
-    page_title = "Churn Intelligence",
+    page_title = "Churn Prediction",
     page_icon = "◈",
     layout = "wide",
     initial_sidebar_state = "collapsed"

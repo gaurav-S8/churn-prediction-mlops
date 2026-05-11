@@ -48,7 +48,7 @@ def render():
             /benchmark — Per-model inference performance
         </div>
     </div>
-    """, unsafe_allow_html=True)
+    """, unsafe_allow_html = True)
 
     # FETCH DATA
     with st.spinner("Loading benchmark metrics..."):
