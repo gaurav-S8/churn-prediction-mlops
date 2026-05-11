@@ -6,6 +6,7 @@ import uuid
 from contextlib import asynccontextmanager
 
 from fastapi import Security
+from fastapi.routing import APIRoute
 from fastapi.responses import HTMLResponse
 from fastapi.security.api_key import APIKeyHeader
 from fastapi.middleware.cors import CORSMiddleware
@@ -82,9 +83,10 @@ async def verify_api_key(api_key: str = Security(api_key_header)):
 async def read_root():
     return {"message": "Churn Prediction API is running"}
 
-@app.get("/health")
+@app.api_route("/health", methods = ["GET", "HEAD"])
 async def check_api_health():
     return {"status": "Ok"}
+
 
 @app.get("/benchmark")
 async def benchmark(api_key: str = Security(verify_api_key)):
