@@ -2,6 +2,7 @@
 import json
 import random
 import streamlit as st
+import streamlit.components.v1 as components
 
 def random_payload():
     return {
@@ -143,8 +144,16 @@ def customer_form(key_prefix = "", mode = "predict"):
 
             # Convert to JSON
             payload_json = json.dumps(current_payload, indent = 2)
+            
             # Copy to clipboard
-            st.code(payload_json, language = "json")
+            components.html(
+                f"""
+                <script>
+                navigator.clipboard.writeText({payload_json});
+                </script>
+                """,
+                height = 0,
+            )
             st.toast("Customer profile copied to clipboard")
         
         if mode == "explain" and paste_info_clicked:
