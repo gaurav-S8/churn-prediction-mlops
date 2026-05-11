@@ -37,9 +37,7 @@ def metric_block(data):
 
 def render():
 
-    # =========================================================
     # PAGE HEADER
-    # =========================================================
     st.markdown("""
     <div class="page-heading">
         <div class="page-title">
@@ -52,10 +50,9 @@ def render():
     </div>
     """, unsafe_allow_html=True)
 
-    # =========================================================
     # FETCH DATA
-    # =========================================================
-    data, status = cached_get("/benchmark")
+    with st.spinner("Loading benchmark metrics..."):
+        data, status = cached_get("/benchmark")
 
     if status != 200:
         st.error(f"Error {status}: {data}")
@@ -65,9 +62,7 @@ def render():
     challenger = data.get("challenger", {})
     total = data.get("total", {})
 
-    # =========================================================
     # REQUEST SUMMARY
-    # =========================================================
     st.markdown(f"""
         <div class="benchmark-summary">
             <div class="summary-card">
@@ -102,9 +97,7 @@ def render():
         unsafe_allow_html=True
     )
 
-    # =========================================================
     # TABLE HEADER
-    # =========================================================
     h1, h2, h3, h4 = st.columns([0.5, 1.5, 1.5, 1.5])
 
     with h1:
@@ -140,9 +133,7 @@ def render():
         unsafe_allow_html=True
     )
 
-    # =========================================================
     # MODEL ROWS
-    # =========================================================
     metrics = [
         ("lgb", "LGB"),
         ("xgb", "XGB"),
@@ -154,9 +145,7 @@ def render():
     for key, label in metrics:
         c1, c2, c3, c4 = st.columns([0.5, 1.5, 1.5, 1.5])
 
-        # -----------------------------------------------------
         # METRIC LABEL
-        # -----------------------------------------------------
         with c1:
             st.markdown(f"""
                 <div class="benchmark-metric-name">
@@ -164,27 +153,21 @@ def render():
                 </div>
             """, unsafe_allow_html=True)
 
-        # -----------------------------------------------------
         # CHAMPION
-        # -----------------------------------------------------
         with c2:
             st.markdown(
                 metric_block(champion.get(key, {})),
                 unsafe_allow_html=True
             )
 
-        # -----------------------------------------------------
         # CHALLENGER
-        # -----------------------------------------------------
         with c3:
             st.markdown(
                 metric_block(challenger.get(key, {})),
                 unsafe_allow_html=True
             )
 
-        # -----------------------------------------------------
         # TOTAL
-        # -----------------------------------------------------
         with c4:
             st.markdown(
                 metric_block(total.get(key, {})),
@@ -196,9 +179,7 @@ def render():
             unsafe_allow_html=True
         )
 
-    # =========================================================
     # OVERHEAD
-    # =========================================================
     c1, c2, c3, c4 = st.columns([0.5, 1.5, 1.5, 1.5])
     with c1:
         st.markdown("""

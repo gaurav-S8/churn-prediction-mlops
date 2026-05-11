@@ -158,7 +158,6 @@ def customer_form(key_prefix = "", mode = "predict"):
         
         if mode == "explain" and paste_info_clicked:
             payload = st.session_state.get("predict_copied_profile")
-            print(payload)
             if payload:
 
                 st.session_state[f"{key_prefix}_data"] = payload

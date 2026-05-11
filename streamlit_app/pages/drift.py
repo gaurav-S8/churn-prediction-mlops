@@ -78,7 +78,7 @@ def render():
 
                 st.markdown('<hr class = "divider">', unsafe_allow_html = True)
                 st.markdown(f"""
-                    <a href = "{API_URL}/drift/report"
+                    <a href = "{API_URL}/drift/report?limit={limit}"
                     target = "_blank"
                     class = "evidently-link">
                         View Full Evidently Report →

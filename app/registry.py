@@ -124,7 +124,7 @@ def sync_model_registry():
                 json.dumps(model_info['parameters']['cat'])
             )
         )
-        print(f"Registered {role} model with run_id: {run_id[:8]}...")
+        # print(f"Registered {role} model with run_id: {run_id[:8]}...")
     
 def get_model_version_info():
     for role in ["champion", "challenger"]:
