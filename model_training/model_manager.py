@@ -24,12 +24,11 @@ def get_experiment_runs():
     
     runs = client.search_runs(
         experiment_ids = [experiment.experiment_id],
-        order_by = ["start_time DESC"]
+        order_by = ["metrics.oof_auc_ensemble DESC"]
     )
     return client, runs
 
 def download_models_and_weights(client, run_id, folder):
-    """
     os.makedirs(folder, exist_ok = True)
     for model_name in ["lgb_model", "xgb_model", "cat_model"]:
         local_path = mlflow.artifacts.download_artifacts(
@@ -39,8 +38,7 @@ def download_models_and_weights(client, run_id, folder):
         model = mlflow.sklearn.load_model(local_path)
         joblib.dump(model, os.path.join(folder, f"{model_name}.pkl"))
         print(f"{model_name.upper()}.pkl saved to {folder}")
-    """
-    
+        
     # Fetch run data
     run = client.get_run(run_id)
 
@@ -113,25 +111,25 @@ def main():
 
     # Champion exists — ask user
     print("\nChampion already exists. What do you want to do?")
-    print("  1. Save latest run to challenger/")
-    print("  2. Save best run (by ROC AUC) to challenger/")
+    print("  1. Save best run (by ROC AUC) to challenger/")
+    print("  2. Save latest run to challenger/")
     print("  3. Exit")
 
     choice = input("\nEnter choice (1/2/3): ").strip()
 
     if choice == "1":
         run_id = runs[0].info.run_id
-        print(f"\nSaving latest run ({run_id[:8]}...) to challenger folder.")
+        print(f"\nSaving best run ({run_id[:8]}...) to challenger folder.")
         download_models_and_weights(client, run_id, CHALLENGER_FOLDER)
         print("Challenger models saved!")
 
     elif choice == "2":
-        best_runs = client.search_runs(
+        latest_runs = client.search_runs(
             experiment_ids = [runs[0].info.experiment_id],
-            order_by = ["metrics.oof_auc_ensemble DESC"]
+            order_by = ["start_time DESC"]
         )
-        run_id = best_runs[0].info.run_id
-        print(f"\nSaving best run ({run_id[:8]}...) to challenger folder.")
+        run_id = latest_runs[0].info.run_id
+        print(f"\nSaving latest run ({run_id[:8]}...) to challenger folder.")
         download_models_and_weights(client, run_id, CHALLENGER_FOLDER)
         print("Challenger models saved!")
 

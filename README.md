@@ -19,6 +19,7 @@
 | Service | URL |
 |---|---|
 | 🚀 FastAPI Backend | [churn-prediction-mlops.onrender.com](https://churn-prediction-mlops.onrender.com) |
+| 📚 API Documentation | [churn-prediction-mlops.onrender.com/docs](https://churn-prediction-mlops.onrender.com/docs) |
 | 📊 Streamlit Dashboard | [huggingface.co/spaces/gaurav-S8/churn-prediction-mlops](https://huggingface.co/spaces/gaurav-S8/churn-prediction-mlops) |
 
 > ⚠️ All API endpoints (except `/health` and `/`) require an API key.  
@@ -64,60 +65,59 @@ Ensemble weights optimized via 500 Optuna trials on out-of-fold predictions.
 ### High-Level Overview
 
 ```text
-┌─────────────────────────────────────────────────────────────────┐
-│                        Training Layer                           │
-│                                                                 │
-│  Kaggle Dataset → Preprocessing → Optuna HP Tuning             │
-│                        │                                        │
-│              Stratified K-Fold CV                               │
-│                        │                                        │
-│         ┌──────────────┼──────────────┐                        │
-│         ▼              ▼              ▼                        │
-│      LightGBM       XGBoost       CatBoost                     │
-│         └──────────────┼──────────────┘                        │
-│                        ▼                                        │
-│              Ensemble Weight Optimization                       │
-│              (500 Optuna Trials on OOF)                        │
-│                        │                                        │
-│                        ▼                                        │
-│              MLflow Experiment Tracking                         │
-│                        │                                        │
-│                        ▼                                        │
-│         model_manager.py → .pkl files baked into Docker        │
-└─────────────────────────────┬───────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                        Serving Layer                            │
-│                                                                 │
-│              FastAPI (Render) — Docker Container                │
-│                                                                 │
-│  ┌──────────┐  ┌──────────┐  ┌───────────┐  ┌─────────────┐  │
-│  │ /predict │  │ /explain │  │  /drift   │  │ /benchmark  │  │
-│  │ A/B route│  │  SHAP    │  │ Evidently │  │  Latency    │  │
-│  └──────────┘  └──────────┘  └───────────┘  └─────────────┘  │
-│                                                                 │
-│  ┌──────────────┐  ┌─────────────────┐                        │
-│  │  /ab-report  │  │ /model-registry │                        │
-│  │  Champion vs │  │ MLflow Lineage  │                        │
-│  │  Challenger  │  │    Tracking     │                        │
-│  └──────────────┘  └─────────────────┘                        │
-│                          │                                      │
-│                          ▼                                      │
-│                   Neon Postgres                                 │
-│         (predictions, inputs, metrics, registry)               │
-└─────────────────────────────┬───────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                        Frontend Layer                           │
-│                                                                 │
-│         Streamlit Dashboard (Hugging Face Spaces)               │
-│                                                                 │
-│  ┌─────────┐ ┌─────────┐ ┌───────┐ ┌───────────┐ ┌─────┐ ┌──────────┐ │
-│  │ Predict │ │ Explain │ │ Drift │ │ Benchmark │ │ A/B │ │ Registry │ │
-│  └─────────┘ └─────────┘ └───────┘ └───────────┘ └─────┘ └──────────┘ │
-└─────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────┐
+│                           Training Layer                            │
+│                                                                     │
+│          Kaggle Dataset → Preprocessing → Optuna HP Tuning          │
+│                                  │                                  │
+│                         Stratified K-Fold CV                        │
+│                                  │                                  │
+│              ┌───────────────────┼───────────────────┐              │
+│              ▼                   ▼                   ▼              │
+│           LightGBM            XGBoost            CatBoost           │
+│              └───────────────────┼───────────────────┘              │
+│                                  ▼                                  │
+│                    Ensemble Weight Optimization                     │
+│                     (500 Optuna Trials on OOF)                      │
+│                                  │                                  │
+│                                  ▼                                  │
+│                      MLflow Experiment Tracking                     │
+│                                  │                                  │
+│                                  ▼                                  │
+│           model_manager.py → .pkl files baked into Docker           │
+└──────────────────────────────────┬──────────────────────────────────┘
+                                   │
+                                   ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                            Serving Layer                            │
+│                                                                     │
+│                 FastAPI (Render) — Docker Container                 │
+│                                                                     │
+│     ┌────────────┐  ┌──────────┐  ┌───────────┐  ┌────────────┐     │
+│     │  /predict  │  │ /explain │  │  /drift   │  │ /benchmark │     │
+│     │  A/B route │  │   SHAP   │  │ Evidently │  │  Latency   │     │
+│     └────────────┘  └──────────┘  └───────────┘  └────────────┘     │
+│     ┌──────────────────────────┐  ┌───────────────────────────┐     │
+│     │        /ab-report        │  │      /model-registry      │     │
+│     │  Champion vs Challenger  │  │  MLflow Lineage Tracking  │     │                          
+│     └──────────────────────────┘  └───────────────────────────┘     │
+│                                                                     │
+│                                  │                                  │
+│                                  ▼                                  │
+│                           Neon Postgres                             │
+│               (predictions, inputs, metrics, registry)              │
+└──────────────────────────────────┬──────────────────────────────────┘
+                                   │
+                                   ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│                            Frontend Layer                            │
+│                                                                      │
+│              Streamlit Dashboard (Hugging Face Spaces)               │
+│                                                                      │
+│ ┌─────────┐ ┌─────────┐ ┌───────┐ ┌───────────┐ ┌─────┐ ┌──────────┐ │
+│ │ Predict │ │ Explain │ │ Drift │ │ Benchmark │ │ A/B │ │ Registry │ │
+│ └─────────┘ └─────────┘ └───────┘ └───────────┘ └─────┘ └──────────┘ │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Request Flow — `/predict` Endpoint
@@ -311,7 +311,7 @@ streamlit run app.py
 
 This project uses **GitHub Actions** for automated testing and deployment.
 
-On every push to the `deploy/render` branch:
+On every push to the `deploy` branch:
 
 1. Dependencies are installed in a fresh Ubuntu environment
 2. 5 pytest tests are executed covering health, root, payload, response structure, and input validation
@@ -321,7 +321,7 @@ On every push to the `deploy/render` branch:
 ### Pipeline Workflow
 
 ```text
-GitHub Push (deploy/render branch)
+GitHub Push (deploy branch)
            │
            ▼
    GitHub Actions
