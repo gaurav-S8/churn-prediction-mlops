@@ -47,11 +47,11 @@ def render():
                 "Requests": model.get("num_api_req_served", 0),
                 "Promoted": model.get("promoted_at"),
                 "Retired": model.get("retired_at"),
-                "LGB (ms)": round(latency.get("lgb_ms", 0) * 1000, 3),
-                "XGB (ms)": round(latency.get("xgb_ms", 0) * 1000, 3),
-                "CAT (ms)": round(latency.get("cat_ms", 0) * 1000, 3),
-                "Ensemble (ms)": round(latency.get("ensemble_ms", 0) * 1000, 3),
-                "End-to-End (ms)": round(latency.get("end_to_end_ms", 0) * 1000, 3),
+                "LGB (ms)": round((latency.get("lgb_ms") or 0) * 1000, 3),
+                "XGB (ms)": round((latency.get("xgb_ms") or 0) * 1000, 3),
+                "CAT (ms)": round((latency.get("cat_ms") or 0) * 1000, 3),
+                "Ensemble (ms)": round((latency.get("ensemble_ms") or 0) * 1000, 3),
+                "End-to-End (ms)": round((latency.get("end_to_end_ms") or 0) * 1000, 3),
             }
         )
 
