@@ -131,7 +131,7 @@ API Key Authentication
       ├── ❌ Invalid → 401 Unauthorized
       │
       ▼
-Rate Limit Check (slowapi — 10 req/min)
+Rate Limit Check (slowapi - 10 req/min)
       │
       ├── ❌ Exceeded → 429 Too Many Requests
       │
@@ -141,7 +141,7 @@ Pydantic Input Validation
       ├── ❌ Invalid → 422 Unprocessable Entity
       │
       ▼
-choose_model() — A/B Router
+choose_model() - A/B Router
       │
       ├── Champion Model (models/champion/)
       └── Challenger Model (models/challenger/)
@@ -161,13 +161,13 @@ choose_model() — A/B Router
             ▼
    JSON Response to Client
             │
-            ▼ (background tasks — non-blocking)
+            ▼ (background tasks - non-blocking)
    Log Prediction + Raw Input → Neon Postgres
 ```
 
 ## 🔧 Machine Learning Pipeline
 
-The pipeline trains three gradient boosting models — **LightGBM, XGBoost, and CatBoost** — on the [Kaggle PS S6E3](https://www.kaggle.com/competitions/playground-series-s6e3) dataset (594,194 rows), and combines them into a weighted ensemble optimized for ROC-AUC.
+The pipeline trains three gradient boosting models — **LightGBM, XGBoost, and CatBoost** on the [Kaggle PS S6E3](https://www.kaggle.com/competitions/playground-series-s6e3) dataset (594,194 rows), and combines them into a weighted ensemble optimized for ROC-AUC.
 
 - **Preprocessing** — Schema validation, categorical encoding, and handling of domain-specific values (e.g., "No internet service")
 - **Feature Engineering** — Derived features such as `TENURE × MONTHLY_CHARGES`, spend ratios, service counts, and binary payment indicators
@@ -226,54 +226,54 @@ A probability above `0.5` is classified as **churn**.
 ```
 
 churn-prediction-mlops/
-├── app/                                — FastAPI application
-│   ├── main.py                         — App entry point, endpoints, lifespan
-│   ├── schemas.py                      — Pydantic input validation
-│   ├── predict.py                      — Inference logic + A/B routing + SHAP explainability
-│   ├── drift.py                        — Evidently drift detection
-│   ├── benchmark.py                    — Per-model latency benchmarking
-│   ├── registry.py                     — Model registry sync
-│   ├── monitoring.py                   — Recent input fetching
-│   ├── load_model.py                   — Model loading with caching
-│   ├── db.py                           — Postgres connection pool
-│   ├── logging.py                      — Prediction + input logging
-│   └── config/settings.py              — Environment config
+├── app/                                - FastAPI application
+│   ├── main.py                         - App entry point, endpoints, lifespan
+│   ├── schemas.py                      - Pydantic input validation
+│   ├── predict.py                      - Inference logic + A/B routing + SHAP explainability
+│   ├── drift.py                        - Evidently drift detection
+│   ├── benchmark.py                    - Per-model latency benchmarking
+│   ├── registry.py                     - Model registry sync
+│   ├── monitoring.py                   - Recent input fetching
+│   ├── load_model.py                   - Model loading with caching
+│   ├── db.py                           - Postgres connection pool
+│   ├── logging.py                      - Prediction + input logging
+│   └── config/settings.py              - Environment config
 ├── models/
-│   ├── champion/                       — Active production models (.pkl)
-│   └── challenger/                     — Candidate models for A/B testing
+│   ├── champion/                       - Active production models (.pkl)
+│   └── challenger/                     - Candidate models for A/B testing
 ├── model_training/
-│   ├── model_trainer.py                — Training pipeline
-│   ├── hyperparameter_optimizer.py     — Optuna studies
-│   ├── model_manager.py                — Export models from MLflow
-│   └── mlflow_launcher.py              — MLflow server launcher
-├── streamlit_app/                      — Streamlit monitoring dashboard
-│   ├── app.py                          — Main entry point
-│   ├── pages/                          — Predict, Explain, Drift, Benchmark, A/B, Registry
-│   ├── components/                     — Navbar, customer form
-│   ├── utils/                          — API calls, plots
-│   ├── styles/                         — Global CSS styles
-│   ├── config/settings.py              — Environment config
-│   ├── .streamlit/config.toml          — Streamlit server config
-│   ├── Dockerfile                      — HF Spaces deployment
-│   └── requirements.txt                — Streamlit dependencies
+│   ├── model_trainer.py                - Training pipeline
+│   ├── hyperparameter_optimizer.py     - Optuna studies
+│   ├── model_manager.py                - Export models from MLflow
+│   └── mlflow_launcher.py              - MLflow server launcher
+├── streamlit_app/                      - Streamlit monitoring dashboard
+│   ├── app.py                          - Main entry point
+│   ├── pages/                          - Predict, Explain, Drift, Benchmark, A/B, Registry
+│   ├── components/                     - Navbar, customer form
+│   ├── utils/                          - API calls, plots
+│   ├── styles/                         - Global CSS styles
+│   ├── config/settings.py              - Environment config
+│   ├── .streamlit/config.toml          - Streamlit server config
+│   ├── Dockerfile                      - HF Spaces deployment
+│   └── requirements.txt                - Streamlit dependencies
 ├── data/
-│   ├── reference.csv                   — Reference dataset for drift detection
+│   ├── reference.csv                   - Reference dataset for drift detection
 ├── tests/
-│   └── test_api.py                     — pytest test cases
+│   └── test_api.py                     - pytest test cases
 ├── utils/
-│   ├── preprocess.py                   — Shared feature engineering
-│   ├── generate_reference_set.py       — Generates drift reference dataset
-│   └── generate_dummy_requests.py      — Drift simulation utility
-├── .github/workflows/ci.yml            — GitHub Actions CI/CD
-├── .env.example                        — Environment variable template
-├── .gitattributes                      — Git LFS and line ending config
-├── .gitignore                          — Git exclusions
-├── .dockerignore                       — Docker build exclusions
-├── Dockerfile                          — FastAPI container
-├── docker-compose.yml                  — Local development
-├── README.md                           — Project documentation
-├── requirements.txt                    — FastAPI dependencies
-└── setup.py                            — Package installation for local imports
+│   ├── preprocess.py                   - Shared feature engineering
+│   ├── generate_reference_set.py       - Generates drift reference dataset
+│   └── generate_dummy_requests.py      - Drift simulation utility
+├── .github/workflows/ci.yml            - GitHub Actions CI/CD
+├── .env.example                        - Environment variable template
+├── .gitattributes                      - Git LFS and line ending config
+├── .gitignore                          - Git exclusions
+├── .dockerignore                       - Docker build exclusions
+├── Dockerfile                          - FastAPI container
+├── docker-compose.yml                  - Local development
+├── README.md                           - Project documentation
+├── requirements.txt                    - FastAPI dependencies
+└── setup.py                            - Package installation for local imports
 
 ```
 

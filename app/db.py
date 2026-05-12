@@ -29,12 +29,10 @@ def execute_query(query, params = None):
 
     conn = connection_pool.getconn()
     try:
-        if conn.closed:
-            connection_pool.putconn(conn)
-            conn = get_connection()
         return run(conn)
     except OperationalError:
-        conn = get_connection()
+        connection_pool.putconn(conn, close = True)
+        conn = connection_pool.getconn()
         return run(conn)
     finally:
         try:
