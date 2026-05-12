@@ -104,18 +104,11 @@ def render():
                     </div>
                 """, unsafe_allow_html = True)
             with c3:
-                if chall in [0, "0", "0.0000", "0.0%", None]:
-                    st.markdown("""
-                        <div class="benchmark-empty">
-                            No traffic
-                        </div>
-                    """, unsafe_allow_html = True)
-                else:
-                    st.markdown(f"""
-                        <div class="ab-value">
-                            {chall}
-                        </div>
-                    """, unsafe_allow_html = True)
+                st.markdown(f"""
+                    <div class="ab-value">
+                        {chall}
+                    </div>
+                """, unsafe_allow_html = True)
               
             st.markdown(
                 "<div style='margin-bottom:8px'></div>",
