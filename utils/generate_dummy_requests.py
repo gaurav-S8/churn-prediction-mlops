@@ -3,20 +3,23 @@ import requests
 import pandas as pd
 
 df = pd.read_csv('data/train.csv')
-df = df.rename(
-    columns = {
-        'id': 'CustomerID',
-        'gender': 'Gender',
-        'tenure': 'Tenure'
-    }
-)
+df = df.rename(columns={
+    'id': 'CustomerID',
+    'gender': 'Gender',
+    'tenure': 'Tenure'
+})
 sample = df.sample(100, random_state = 99)
 
-print(sample)
+# Toggle this
+USE_LOCAL = False
 
-URL = "http://localhost:8000/predict"
+HEADERS = {"X-API-Key": "YOUR-API-KEY"}
+if USE_LOCAL:
+    URL = "http://localhost:8000/predict"
+else:
+    URL = "https://churn-prediction-mlops.onrender.com/predict"
 
-for i, row in sample.iterrows():
+for idx, (i, row) in enumerate(sample.iterrows()):
     payload = {
         "CustomerID": str(row['CustomerID']),
         "Gender": row['Gender'],
@@ -39,7 +42,6 @@ for i, row in sample.iterrows():
         "MonthlyCharges": float(row['MonthlyCharges']),
         "TotalCharges": float(row['TotalCharges'])
     }
-    response = requests.post(URL, json = payload)
-    print(f"Request {i+1}: {response.status_code}")
-    # 2 seconds between requests
-    time.sleep(2)
+    response = requests.post(URL, json = payload, headers = HEADERS)
+    print(f"Request {idx+1}/100: {response.status_code} — {response.json()}")
+    time.sleep(7)

@@ -14,7 +14,7 @@ def infer_model(model, dataframe):
     return pred, time.time() - start_time
 
 def choose_model(champion_ensemble, challenger_ensemble):
-    if challenger_ensemble and random.random() > 0.9:
+    if challenger_ensemble and random.random() > 0.8:
         return challenger_ensemble, 'challenger'
     return champion_ensemble, 'champion'
 

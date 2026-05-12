@@ -7,4 +7,4 @@ API_KEY = os.getenv("API_KEY", "")
 API_URL = os.getenv("API_URL", "http://localhost:8000")
 
 # Pages
-PAGES = ["Predict", "Explain", "Benchmark", "A/B Report", "Drift", "Registry"]
+PAGES = ["Predict", "Explain", "Drift", "A/B Report", "Registry", "Benchmark"]
