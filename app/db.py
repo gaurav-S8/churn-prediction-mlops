@@ -2,7 +2,7 @@
 import json
 import psycopg2
 import pandas as pd
-from psycopg2 import pool
+from psycopg2 import pool, OperationalError
 
 # Import Custom Modules
 from app.config.settings import DATABASE_URL
