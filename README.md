@@ -14,24 +14,24 @@
 ![Neon](https://img.shields.io/badge/Neon-Cloud%20Postgres-00E599?style=flat&logo=neon&logoColor=black)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat)
 
-## 🔗 Demo Links
+## Demo Links
 
 | Service | URL |
 |---|---|
-| 🚀 FastAPI Backend | [churn-prediction-mlops.onrender.com](https://churn-prediction-mlops.onrender.com) |
-| 📚 API Documentation | [churn-prediction-mlops.onrender.com/docs](https://churn-prediction-mlops.onrender.com/docs) |
-| 📊 Streamlit Dashboard | [huggingface.co/spaces/gaurav-S8/churn-prediction-mlops](https://huggingface.co/spaces/gaurav-S8/churn-prediction-mlops) |
+| FastAPI Backend | [churn-prediction-mlops.onrender.com](https://churn-prediction-mlops.onrender.com) |
+| API Documentation | [churn-prediction-mlops.onrender.com/docs](https://churn-prediction-mlops.onrender.com/docs) |
+| Streamlit Dashboard | [huggingface.co/spaces/gaurav-S8/churn-prediction-mlops](https://huggingface.co/spaces/gaurav-S8/churn-prediction-mlops) |
 
-> ⚠️ All API endpoints (except `/health` and `/`) require an API key.  
+> **Note:** All API endpoints (except `/health` and `/`) require an API key.  
 > UptimeRobot pings `/health` every 5 minutes to minimize cold starts.
 > The Render instance may still take ~30s to wake up on first request (free tier cold start).
 
-## 📌 Overview
+## Overview
 A production-grade MLOps platform for real-time customer churn prediction using a weighted ensemble of LightGBM, XGBoost, and CatBoost, achieving a Private Leaderboard ROC-AUC of 0.9154 on Kaggle Playground Series S6E3.
 
 The system implements the full MLOps lifecycle, including Optuna-tuned model training with MLflow experiment tracking, a FastAPI inference service with A/B testing, SHAP explainability, and Evidently AI drift detection, backed by Neon Postgres for persistent storage of predictions, model metadata, and inference logs. The FastAPI service is fully containerized with Docker, deployed on Render, while the Streamlit monitoring dashboard is hosted on Hugging Face Spaces. The entire deployment pipeline is automated using GitHub Actions CI/CD.
 
-## 🏆 Kaggle Benchmark
+## Kaggle Benchmark
 
 **Competition**: [Playground Series S6E3 - Predict Customer Churn](https://www.kaggle.com/competitions/playground-series-s6e3)  
 **Dataset**: 594,194 rows  
@@ -50,7 +50,7 @@ The system implements the full MLOps lifecycle, including Optuna-tuned model tra
 
 Ensemble weights optimized via 500 Optuna trials on out-of-fold predictions.
 
-## ✨ Key Features
+## Key Features
 
 - **Weighted Ensemble:** Combines LightGBM, XGBoost, and CatBoost using Optuna-optimized weights and Stratified K-Fold cross-validation.
 - **A/B Testing:** Champion vs Challenger request routing at inference time with MLflow lineage tracking
@@ -61,7 +61,7 @@ Ensemble weights optimized via 500 Optuna trials on out-of-fold predictions.
 - **CI/CD Pipeline:** GitHub Actions runs automated pytest suites and deploys to Render and Hugging Face Spaces on successful builds
 - **Streamlit Dashboard:** Unified UI for inference, explainability, benchmarking, drift analysis, A/B reporting, and registry monitoring
 
-## 🏗️ System Architecture
+## System Architecture
 
 ### High-Level Overview
 
@@ -166,7 +166,7 @@ choose_model() - A/B Router
    Log Prediction + Raw Input → Neon Postgres
 ```
 
-## 🔧 Machine Learning Pipeline
+## Machine Learning Pipeline
 
 The pipeline trains three gradient boosting models (LightGBM, XGBoost, and CatBoost) on the [Kaggle PS S6E3](https://www.kaggle.com/competitions/playground-series-s6e3) dataset (594,194 rows), and combines them into a weighted ensemble optimized for ROC-AUC.
 
@@ -187,7 +187,7 @@ final_probability = (w_lgb × p_lgb) + (w_xgb × p_xgb) + (w_cat × p_cat)
 
 A probability above `0.5` is classified as **churn**.
 
-## 🔌 API Endpoints
+## API Endpoints
 
 > All endpoints except `/` and `/health` require authentication header.
 
@@ -203,9 +203,9 @@ A probability above `0.5` is classified as **churn**.
 | `GET` | `/ab-report` | Champion vs Challenger prediction comparison |
 | `GET` | `/model-registry` | Active model versions with lineage info |
 
-> 📌 Full interactive API docs available at [`/docs`](https://churn-prediction-mlops.onrender.com/docs)
+> Full interactive API docs available at [`/docs`](https://churn-prediction-mlops.onrender.com/docs)
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Category | Technology |
 |---|---|
@@ -222,7 +222,7 @@ A probability above `0.5` is classified as **churn**.
 | Security | API key authentication, slowapi rate limiting, CORS |
 | Monitoring | UptimeRobot |
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 
@@ -278,7 +278,7 @@ churn-prediction-mlops/
 
 ```
 
-## 🚀 Local Setup
+## Local Setup
 
 > Requires a Postgres database (e.g. [Neon](https://neon.tech) free tier). Set `DATABASE_URL` accordingly.
 
@@ -314,7 +314,7 @@ streamlit run app.py
 > Make sure `.env` and `.env.docker` are filled in before starting. Never commit these files.
 
 
-## 🔄 CI/CD Pipeline
+## CI/CD Pipeline
 
 This project uses **GitHub Actions** for automated testing and deployment.
 
@@ -351,7 +351,7 @@ Render Deploy   HF Spaces Sync
    Deployment Complete
 ```
 
-## 🚧 Future Improvements
+## Future Improvements
 
 - **Kubernetes deployment:** Horizontal pod autoscaling for high-traffic inference
 - **Automated model promotion:** Trigger champion/challenger swap based on live ROC-AUC thresholds
@@ -360,14 +360,14 @@ Render Deploy   HF Spaces Sync
 - **Async inference:** Celery + Redis queue for high-throughput non-blocking predictions
 - **Prometheus + Grafana:** Add production-grade metrics collection, dashboards, and alerting for API health, inference performance, and system resources.
 
-## 🙏 Acknowledgements
+## Acknowledgements
 
 - Dataset: [Kaggle Playground Series S6E3](https://www.kaggle.com/competitions/playground-series-s6e3)
 - Postgres hosting: [Neon](https://neon.tech)
 - API deployment platform: [Render](https://render.com)
 - Streamlit dashboard hosting: [Hugging Face Spaces](https://huggingface.co/spaces)
 
-## 👤 Author
+## Author
 
 **Gaurav Singariya**
 
