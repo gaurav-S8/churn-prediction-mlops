@@ -29,7 +29,7 @@
 ## 📌 Overview
 A production-grade MLOps platform for real-time customer churn prediction using a weighted ensemble of LightGBM, XGBoost, and CatBoost, achieving a Private Leaderboard ROC-AUC of 0.9154 on Kaggle Playground Series S6E3.
 
-The system implements the full MLOps lifecycle, including Optuna-tuned model training with MLflow experiment tracking, a FastAPI inference service with A/B testing, SHAP explainability, and Evidently AI drift detection, backed by Neon Postgres for persistent logging. The FastAPI service is fully containerized with Docker, deployed on Render, while the Streamlit monitoring dashboard is hosted on Hugging Face Spaces. The entire deployment pipeline is automated using GitHub Actions CI/CD.
+The system implements the full MLOps lifecycle, including Optuna-tuned model training with MLflow experiment tracking, a FastAPI inference service with A/B testing, SHAP explainability, and Evidently AI drift detection, backed by Neon Postgres for persistent storage of predictions, model metadata, and inference logs. The FastAPI service is fully containerized with Docker, deployed on Render, while the Streamlit monitoring dashboard is hosted on Hugging Face Spaces. The entire deployment pipeline is automated using GitHub Actions CI/CD.
 
 ## 🏆 Kaggle Benchmark
 
@@ -52,12 +52,12 @@ Ensemble weights optimized via 500 Optuna trials on out-of-fold predictions.
 
 ## ✨ Key Features
 
-- **Weighted Ensemble:** LightGBM, XGBoost, and CatBoost with Optuna-optimized weights and Stratified K-Fold cross-validation
+- **Weighted Ensemble:** Combines LightGBM, XGBoost, and CatBoost using Optuna-optimized weights and Stratified K-Fold cross-validation.
 - **A/B Testing:** Champion vs Challenger request routing at inference time with MLflow lineage tracking
 - **Drift Detection:** Evidently AI compares live requests against reference data with per-feature drift scores and interactive HTML reports
 - **SHAP Explainability:** TreeExplainer-based feature contribution analysis for individual predictions
-- **Custom Model Registry:** Postgres-backed registry tracking model lineage, hyperparameters, ROC-AUC, and live latency metrics
-- **Production Hardened:** API key authentication, slowapi rate limiting, connection pooling, background task logging, and Streamlit-side request caching
+- **Model Registry:** Postgres-backed registry tracking model lineage, hyperparameters, ROC-AUC, and live latency metrics
+- **Production Features:** API key authentication, slowapi rate limiting, connection pooling, background task logging, and Streamlit-side request caching
 - **CI/CD Pipeline:** GitHub Actions runs automated pytest suites and deploys to Render and Hugging Face Spaces on successful builds
 - **Streamlit Dashboard:** Unified UI for inference, explainability, benchmarking, drift analysis, A/B reporting, and registry monitoring
 
@@ -296,7 +296,7 @@ cp .env.example .env        # for running FastAPI locally
 cp .env.example .env.docker # for running FastAPI via Docker
 # Fill in DATABASE_URL and API_KEY in both files
 
-# `API_URL` tells the Streamlit frontend which FastAPI backend to connect to.
+# API_URL tells the Streamlit frontend which FastAPI backend to connect to.
 # Local development: `http://localhost:8000`
 # Deployed backend (e.g. Render): `https://<your-backend>.onrender.com`
 
