@@ -27,18 +27,19 @@
 > The Render instance may still take ~30s to wake up on first request (free tier cold start).
 
 ## 📌 Overview
-A production-grade MLOps platform for real-time customer churn prediction, built on a weighted ensemble of LightGBM, XGBoost, and CatBoost models achieving a validation ROC-AUC of **0.9162** on Kaggle Playground Series S6E3 (within 0.003 of the top leaderboard).
+A production-grade MLOps platform for real-time customer churn prediction using a weighted ensemble of LightGBM, XGBoost, and CatBoost, achieving a Private Leaderboard ROC-AUC of 0.9154 on Kaggle Playground Series S6E3.
 
-The system implements the full MLOps lifecycle — Optuna-tuned model training with MLflow experiment tracking, a FastAPI inference service with A/B testing, SHAP explainability, and Evidently AI drift detection, backed by Neon Postgres for persistent logging. The FastAPI service is fully containerized with Docker, deployed on Render, with a Streamlit monitoring dashboard on Hugging Face Spaces and automated via GitHub Actions CI/CD.
+The system implements the full MLOps lifecycle, including Optuna-tuned model training with MLflow experiment tracking, a FastAPI inference service with A/B testing, SHAP explainability, and Evidently AI drift detection, backed by Neon Postgres for persistent logging. The FastAPI service is fully containerized with Docker, deployed on Render, while the Streamlit monitoring dashboard is hosted on Hugging Face Spaces. The entire deployment pipeline is automated using GitHub Actions CI/CD.
 
 ## 🏆 Kaggle Benchmark
 
-**Competition**: [Playground Series S6E3 — Predict Customer Churn](https://www.kaggle.com/competitions/playground-series-s6e3)  
+**Competition**: [Playground Series S6E3 - Predict Customer Churn](https://www.kaggle.com/competitions/playground-series-s6e3)  
 **Dataset**: 594,194 rows  
 **Final Rank**: **1160 / 4142 teams (Top 28%)**  
-**Validation ROC-AUC**: **0.9162** (within 0.003 of the top leaderboard)
+**Private Leaderboard ROC-AUC**: **0.9154** (within 0.003 of the top leaderboard)  
+**Validation ROC-AUC (OOF)**: **0.9162** (during training)
 
-### Model Performance
+### Model Performance (Training/Validation)
 
 | Model | OOF ROC-AUC |
 |---|---|
@@ -51,14 +52,14 @@ Ensemble weights optimized via 500 Optuna trials on out-of-fold predictions.
 
 ## ✨ Key Features
 
-- **Weighted Ensemble** — LightGBM, XGBoost, and CatBoost with Optuna-optimized weights and Stratified K-Fold cross-validation
-- **A/B Testing** — Champion vs Challenger request routing at inference time with MLflow lineage tracking
-- **Drift Detection** — Evidently AI compares live requests against reference data with per-feature drift scores and interactive HTML reports
-- **SHAP Explainability** — TreeExplainer-based feature contribution analysis for individual predictions
-- **Custom Model Registry** — Postgres-backed registry tracking model lineage, hyperparameters, ROC-AUC, and live latency metrics
-- **Production Hardened** — API key authentication, slowapi rate limiting, connection pooling, background task logging, and Streamlit-side request caching
-- **CI/CD Pipeline** — GitHub Actions runs automated pytest suites and deploys to Render and Hugging Face Spaces on successful builds
-- **Streamlit Dashboard** — Unified UI for inference, explainability, benchmarking, drift analysis, A/B reporting, and registry monitoring
+- **Weighted Ensemble:** LightGBM, XGBoost, and CatBoost with Optuna-optimized weights and Stratified K-Fold cross-validation
+- **A/B Testing:** Champion vs Challenger request routing at inference time with MLflow lineage tracking
+- **Drift Detection:** Evidently AI compares live requests against reference data with per-feature drift scores and interactive HTML reports
+- **SHAP Explainability:** TreeExplainer-based feature contribution analysis for individual predictions
+- **Custom Model Registry:** Postgres-backed registry tracking model lineage, hyperparameters, ROC-AUC, and live latency metrics
+- **Production Hardened:** API key authentication, slowapi rate limiting, connection pooling, background task logging, and Streamlit-side request caching
+- **CI/CD Pipeline:** GitHub Actions runs automated pytest suites and deploys to Render and Hugging Face Spaces on successful builds
+- **Streamlit Dashboard:** Unified UI for inference, explainability, benchmarking, drift analysis, A/B reporting, and registry monitoring
 
 ## 🏗️ System Architecture
 
@@ -120,7 +121,7 @@ Ensemble weights optimized via 500 Optuna trials on out-of-fold predictions.
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-### Request Flow — `/predict` Endpoint
+### Request Flow - `/predict` Endpoint
 
 ```text
 Client Request
@@ -167,14 +168,14 @@ choose_model() - A/B Router
 
 ## 🔧 Machine Learning Pipeline
 
-The pipeline trains three gradient boosting models — **LightGBM, XGBoost, and CatBoost** on the [Kaggle PS S6E3](https://www.kaggle.com/competitions/playground-series-s6e3) dataset (594,194 rows), and combines them into a weighted ensemble optimized for ROC-AUC.
+The pipeline trains three gradient boosting models (LightGBM, XGBoost, and CatBoost) on the [Kaggle PS S6E3](https://www.kaggle.com/competitions/playground-series-s6e3) dataset (594,194 rows), and combines them into a weighted ensemble optimized for ROC-AUC.
 
-- **Preprocessing** — Schema validation, categorical encoding, and handling of domain-specific values (e.g., "No internet service")
-- **Feature Engineering** — Derived features such as `TENURE × MONTHLY_CHARGES`, spend ratios, service counts, and binary payment indicators
-- **Validation** — Stratified K-Fold cross-validation across all models
-- **Hyperparameter Tuning** — Optuna used to optimize learning rate, tree depth, and subsampling parameters
-- **Ensemble** — Out-of-Fold predictions used to optimize ensemble weights via 500 Optuna trials, combined using weighted averaging
-- **Experiment Tracking** — All runs logged in MLflow with parameters, ROC-AUC metrics, and model artifacts
+- **Preprocessing:** Schema validation, categorical encoding, and handling of domain-specific values (e.g., "No internet service")
+- **Feature Engineering:** Derived features such as `TENURE × MONTHLY_CHARGES`, spend ratios, service counts, and binary payment indicators
+- **Validation:** Stratified K-Fold cross-validation across all models
+- **Hyperparameter Tuning:** Optuna used to optimize learning rate, tree depth, and subsampling parameters
+- **Ensemble:** Out-of-Fold predictions used to optimize ensemble weights via 500 Optuna trials, combined using weighted averaging
+- **Experiment Tracking:** All runs logged in MLflow with parameters, ROC-AUC metrics, and model artifacts
 
 ### Inference
 
@@ -279,6 +280,8 @@ churn-prediction-mlops/
 
 ## 🚀 Local Setup
 
+> Requires a Postgres database (e.g. [Neon](https://neon.tech) free tier). Set `DATABASE_URL` accordingly.
+
 ```bash
 # Clone repository
 git clone https://github.com/gaurav-S8/churn-prediction-mlops.git
@@ -292,6 +295,10 @@ pip install -e .
 cp .env.example .env        # for running FastAPI locally
 cp .env.example .env.docker # for running FastAPI via Docker
 # Fill in DATABASE_URL and API_KEY in both files
+
+# `API_URL` tells the Streamlit frontend which FastAPI backend to connect to.
+# Local development: `http://localhost:8000`
+# Deployed backend (e.g. Render): `https://<your-backend>.onrender.com`
 
 # Start FastAPI via Docker
 docker-compose up --build
@@ -346,24 +353,27 @@ Render Deploy   HF Spaces Sync
 
 ## 🚧 Future Improvements
 
-- **Kubernetes deployment** — Horizontal pod autoscaling for high-traffic inference
-- **Prometheus + Grafana** — Replace custom latency tracking with industry-standard observability stack
-- **Automated model promotion** — Trigger champion/challenger swap based on live ROC-AUC thresholds
-- **Feature store** — Centralized feature registry to eliminate training/serving skew
-- **Retraining pipeline** — Automatically retrain when Evidently drift scores exceed threshold
-- **Async inference** — Celery + Redis queue for high-throughput non-blocking predictions
+- **Kubernetes deployment:** Horizontal pod autoscaling for high-traffic inference
+- **Automated model promotion:** Trigger champion/challenger swap based on live ROC-AUC thresholds
+- **Feature store:** Centralized feature registry to eliminate training/serving skew
+- **Retraining pipeline:** Automatically retrain when Evidently drift scores exceed threshold
+- **Async inference:** Celery + Redis queue for high-throughput non-blocking predictions
+- **Prometheus + Grafana:** Add production-grade metrics collection, dashboards, and alerting for API health, inference performance, and system resources.
 
 ## 🙏 Acknowledgements
 
-- [Kaggle Playground Series S6E3](https://www.kaggle.com/competitions/playground-series-s6e3) — Dataset
-- [Neon](https://neon.tech) — Serverless Postgres hosting
-- [Render](https://render.com) — API deployment platform
-- [Hugging Face Spaces](https://huggingface.co/spaces) — Streamlit dashboard hosting
+- Dataset: [Kaggle Playground Series S6E3](https://www.kaggle.com/competitions/playground-series-s6e3)
+- Postgres hosting: [Neon](https://neon.tech)
+- API deployment platform: [Render](https://render.com)
+- Streamlit dashboard hosting: [Hugging Face Spaces](https://huggingface.co/spaces)
 
 ## 👤 Author
 
-**Gaurav Singariya**  
-MSc Data Science
+**Gaurav Singariya**
+
+- Email: gaurav.singariya.26@gmail.com
+- LinkedIn: [linkedin.com/in/gauravsingariya](https://www.linkedin.com/in/gauravsingariya/)
+- GitHub: [github.com/gaurav-S8](https://github.com/gaurav-S8)
 
 [![GitHub](https://img.shields.io/badge/GitHub-gaurav--S8-181717?style=flat&logo=github&logoColor=white)](https://github.com/gaurav-s8)
 
